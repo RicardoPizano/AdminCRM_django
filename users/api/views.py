@@ -14,6 +14,7 @@ from rest_framework.response import Response
 
 from users.models import User
 
+
 @api_view(['POST'])
 @csrf_exempt
 def register_user(request):
@@ -33,13 +34,15 @@ def register_user(request):
                 return Response({'response': 0, 'errors': 'email already exists'})
             except:
                 try:
-                    user = User(name=name, last_name=last_name, nickname=nickname, mail=mail, password=password, user_type=0, is_active=True)
+                    user = User(name=name, last_name=last_name, nickname=nickname, mail=mail, password=password,
+                                user_type=0, is_active=True)
                     user.save()
                     return Response({'response': 1})
                 except DataError as data_error:
                     return Response({'response': 0, 'errors': 'Error in the data sending'})
                 except DatabaseError as database_error:
                     return Response({'response': 0, 'errors': 'Error in the data base'})
+
 
 @api_view(['POST'])
 @csrf_exempt
@@ -84,6 +87,7 @@ def login(request):
             except ObjectDoesNotExist as error:
                 return Response({'response': 0, 'errors': 'Username or password incorrect'})
 
+
 @api_view(['POST'])
 @csrf_exempt
 def update_user(request):
@@ -98,6 +102,7 @@ def update_user(request):
         user.save()
         return Response({'response': 1})
 
+
 @api_view(['POST'])
 @csrf_exempt
 def delete_user(request):
@@ -106,3 +111,44 @@ def delete_user(request):
         user.is_active = False
         user.save()
         return Response({'response': 1})
+
+
+@api_view(['POST'])
+@csrf_exempt
+def view_profile(request):
+    try:
+        user = User.objects.get(pk=request.data['user_id'])
+        response = {
+            'name': user.name,
+            'last_name': user.last_name,
+            'nickname': user.nickname,
+            'email': user.mail,
+            'user_type': user.user_type
+        }
+        return Response({'response': 1, 'user': response})
+    except User.DoesNotExist:
+        return Response({'response': 0, 'error': 'The user does not exist'})
+
+
+@api_view(['POST'])
+@csrf_exempt
+def get_users_by_type(request):
+    user_type = request.data['user_type']
+    users = User.objects.filter(user_type=user_type)
+    if users.count() > 0:
+        response = []
+        for user in users:
+            response.append(
+                {
+                    'name': user.name,
+                    'last_name': user.last_name,
+                    'nickname': user.nickname,
+                    'email': user.mail,
+                    'register_date': user.register_date,
+                    'user_type': user.user_type,
+                    'is_active': user.is_active
+                }
+            )
+        return Response({'response': 1, 'users': response})
+    else:
+        return Response({'response': 0})

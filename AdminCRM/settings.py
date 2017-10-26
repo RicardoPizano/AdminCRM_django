@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework', #Rest framework specs
     'rest_framework.authtoken', #Authentication token based
     'api', #Rest framework urls config
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'AdminCRM.urls'
