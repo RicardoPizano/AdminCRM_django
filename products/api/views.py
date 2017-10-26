@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import hashlib
-
-from django.core.exceptions import ObjectDoesNotExist
-from django.db import DataError, DatabaseError
-from django.shortcuts import render
-
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
@@ -14,11 +8,13 @@ from rest_framework.response import Response
 
 from products.models import ProductType, Product
 
+
 @api_view(['GET'])
 @csrf_exempt
 def get_products_types(request):
     productsTypes = ProductType.objects.all()
     return Response({'response': 1, 'data': list(productsTypes.values())})
+
 
 @api_view(['GET'])
 @csrf_exempt
@@ -26,11 +22,13 @@ def get_products(request):
     products = Product.objects.all()
     return Response({'response': 1, 'data': list(products.values())})
 
+
 @api_view(['GET'])
 @csrf_exempt
 def get_products_by_type(request, type_id):
     products = Product.objects.filter(product_type=type_id)
     return Response({'response': 1, 'data': list(products.values())})
+
 
 @api_view(['POST'])
 @csrf_exempt
@@ -45,6 +43,7 @@ def register_product_type(request):
         finally:
             return Response({'response': 0})
 
+
 @api_view(['POST'])
 @csrf_exempt
 def register_product(request):
@@ -56,11 +55,13 @@ def register_product(request):
             stock = request.data['stock']
             product_type = request.data['product_type']
             image = request.data['image']
-            product = Product(name=name, description=description, price=price, stock=stock, product_type=product_type, image=image)
+            product = Product(name=name, description=description, price=price, stock=stock, product_type=product_type,
+                              image=image)
             product.save()
             return Response({'response': 1})
         finally:
             return Response({'response': 0})
+
 
 @api_view(['POST'])
 @csrf_exempt
@@ -73,6 +74,7 @@ def update_product_type(request):
             product_type.description = request.data['description']
         product_type.save()
         return Response({'response': 1})
+
 
 @api_view(['POST'])
 @csrf_exempt
@@ -94,6 +96,7 @@ def update_product(request):
         product.save()
         return Response({'response': 1})
 
+
 @api_view(['POST'])
 @csrf_exempt
 def delete_product_type(request):
@@ -101,6 +104,7 @@ def delete_product_type(request):
         product_type = ProductType.objects.get(request.data['id'])
         product_type.delete()
         return Response({'response': 1})
+
 
 @api_view(['POST'])
 @csrf_exempt

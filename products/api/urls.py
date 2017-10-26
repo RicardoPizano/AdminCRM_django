@@ -1,5 +1,4 @@
-from django.conf.urls import url, include
-from django.contrib import admin
+from django.conf.urls import url
 
 from products.api.views import get_products_types, get_products, get_products_by_type, register_product_type, register_product, update_product_type, update_product, delete_product_type, delete_product
 

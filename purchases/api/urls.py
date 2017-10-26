@@ -1,8 +1,7 @@
-from django.conf.urls import url, include
-from django.contrib import admin
+from django.conf.urls import url
 
-from products.api.views import get_products_types, get_products, get_products_by_type
+from purchases.api.views import register_purchase
 
 urlpatterns = [
-    url(r'^get_products_types/$', get_products_types, name='api_get_products_types'),
+    url(r'^register_purchase/$', register_purchase, name='api_register_purchase'),
 ]

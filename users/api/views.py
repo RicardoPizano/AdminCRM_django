@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import hashlib
-
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import DataError, DatabaseError
-from django.shortcuts import render
 
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
@@ -28,20 +24,15 @@ def register_user(request):
         try:
             user = User.objects.get(nickname=nickname)
             return Response({'response': 0, 'error': 'nickname already exists'})
-        except:
+        except User.DoesNotExist:
             try:
                 user = User.objects.get(mail=mail)
                 return Response({'response': 0, 'errors': 'email already exists'})
-            except:
-                try:
-                    user = User(name=name, last_name=last_name, nickname=nickname, mail=mail, password=password,
-                                user_type=0, is_active=True)
-                    user.save()
-                    return Response({'response': 1})
-                except DataError as data_error:
-                    return Response({'response': 0, 'errors': 'Error in the data sending'})
-                except DatabaseError as database_error:
-                    return Response({'response': 0, 'errors': 'Error in the data base'})
+            except User.DoesNotExist:
+                user = User(name=name, last_name=last_name, nickname=nickname, mail=mail, password=password,
+                            user_type=0, is_active=True)
+                user.save()
+                return Response({'response': 1})
 
 
 @api_view(['POST'])
@@ -53,7 +44,7 @@ def login(request):
 
         try:
             user = User.objects.get(nickname=username, password=password)
-            if user.is_active == True:
+            if user.is_active:
                 return Response({
                     'response': 1,
                     'data': {
@@ -70,7 +61,7 @@ def login(request):
         except ObjectDoesNotExist:
             try:
                 user = User.objects.get(mail=username, password=password)
-                if user.is_active == True:
+                if user.is_active:
                     return Response({
                         'response': 1,
                         'data': {
@@ -84,7 +75,7 @@ def login(request):
                     })
                 else:
                     return Response({'response': 0, 'errors': 'the user has been deleted'})
-            except ObjectDoesNotExist as error:
+            except ObjectDoesNotExist:
                 return Response({'response': 0, 'errors': 'Username or password incorrect'})
 
 
