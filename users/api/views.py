@@ -131,6 +131,7 @@ def get_users_by_type(request):
         for user in users:
             response.append(
                 {
+                    'id': user.pk,
                     'name': user.name,
                     'last_name': user.last_name,
                     'nickname': user.nickname,
