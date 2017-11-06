@@ -129,18 +129,19 @@ def get_users_by_type(request):
     if users.count() > 0:
         response = []
         for user in users:
-            response.append(
-                {
-                    'id': user.pk,
-                    'name': user.name,
-                    'last_name': user.last_name,
-                    'nickname': user.nickname,
-                    'email': user.mail,
-                    'register_date': user.register_date,
-                    'user_type': user.user_type,
-                    'is_active': user.is_active
-                }
-            )
+            if user.is_active:
+                response.append(
+                    {
+                        'id': user.pk,
+                        'name': user.name,
+                        'last_name': user.last_name,
+                        'nickname': user.nickname,
+                        'email': user.mail,
+                        'register_date': user.register_date,
+                        'user_type': user.user_type,
+                        'is_active': user.is_active
+                    }
+                )
         return Response({'response': 1, 'users': response})
     else:
         return Response({'response': 0})
