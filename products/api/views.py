@@ -12,8 +12,8 @@ from products.models import ProductType, Product
 @api_view(['GET'])
 @csrf_exempt
 def get_products_types(request):
-    productsTypes = ProductType.objects.all()
-    return Response({'response': 1, 'data': list(productsTypes.values())})
+    products_types = ProductType.objects.all()
+    return Response({'response': 1, 'data': list(products_types.values())})
 
 
 @api_view(['GET'])
@@ -34,14 +34,11 @@ def get_products_by_type(request, type_id):
 @csrf_exempt
 def register_product_type(request):
     if request.method == 'POST':
-        try:
-            name = request.data['name']
-            description = request['description']
-            product_type = ProductType(name=name, description=description)
-            product_type.save()
-            return Response({'response': 1})
-        finally:
-            return Response({'response': 0})
+        name = request.data['name']
+        description = request.data['description']
+        product_type = ProductType(name=name, description=description)
+        product_type.save()
+        return Response({'response': 1})
 
 
 @api_view(['POST'])
@@ -53,13 +50,13 @@ def register_product(request):
             description = request.data['description']
             price = request.data['price']
             stock = request.data['stock']
-            product_type = request.data['product_type']
+            product_type = ProductType.objects.get(pk=request.data['product_type'])
             image = request.data['image']
             product = Product(name=name, description=description, price=price, stock=stock, product_type=product_type,
                               image=image)
             product.save()
             return Response({'response': 1})
-        finally:
+        except ProductType.DoesNotExist:
             return Response({'response': 0})
 
 
