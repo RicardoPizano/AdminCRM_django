@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from datetime import datetime
+
 from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
@@ -101,6 +103,7 @@ def delete_user(request):
     if request.method == 'POST':
         user = User.objects.get(pk=request.data['id'])
         user.is_active = False
+        user.delete_date = datetime.today()
         user.save()
         return Response({'response': 1})
 

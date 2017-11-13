@@ -6,11 +6,13 @@ from django.db import models
 
 # Create your models here.
 class User(models.Model):
-    name = models.CharField(max_length=50, blank=True)
-    last_name = models.CharField(max_length=50, blank=True)
+    name = models.CharField(max_length=50, blank=True, null=True)
+    last_name = models.CharField(max_length=50, blank=True, null=True)
     nickname = models.CharField(max_length=30)
     mail = models.CharField(max_length=80)
     register_date = models.DateField(auto_now=True)
+    delete_date = models.DateField(blank=True, null=True)
     password = models.CharField(max_length=255)
     user_type = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
+
