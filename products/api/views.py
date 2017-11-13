@@ -132,7 +132,7 @@ def update_product(request):
 @csrf_exempt
 def delete_product_type(request):
     if request.method == 'POST':
-        product_type = ProductType.objects.get(request.data['id'])
+        product_type = ProductType.objects.get(pk=request.data['id'])
         product_type.delete()
         return Response({'response': 1})
 
@@ -141,6 +141,6 @@ def delete_product_type(request):
 @csrf_exempt
 def delete_product(request):
     if request.method == 'POST':
-        product = Product.objects.get(request.data['id'])
+        product = Product.objects.get(pk=request.data['id'])
         product.delete()
         return Response({'response': 1})
