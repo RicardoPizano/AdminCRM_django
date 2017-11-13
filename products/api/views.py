@@ -18,6 +18,21 @@ def get_products_types(request):
 
 @api_view(['GET'])
 @csrf_exempt
+def get_products_types_by_id(request, product_type_id):
+    try:
+        product_type = ProductType.objects.get(pk=product_type_id)
+        response = {
+            'id': product_type.pk,
+            'name': product_type.name,
+            'description': product_type.description
+        }
+        return Response({'response': 1, 'product_type': response})
+    except ProductType.DoesNotExist:
+        return Response({'response': 0})
+
+
+@api_view(['GET'])
+@csrf_exempt
 def get_products(request):
     products = Product.objects.all()
     return Response({'response': 1, 'data': list(products.values())})
@@ -28,6 +43,25 @@ def get_products(request):
 def get_products_by_type(request, type_id):
     products = Product.objects.filter(product_type=type_id)
     return Response({'response': 1, 'data': list(products.values())})
+
+
+@api_view(['GET'])
+@csrf_exempt
+def get_products_by_id(request, product_id):
+    try:
+        product = Product.objects.get(pk=product_id)
+        response = {
+            'id': product.pk,
+            'name': product.name,
+            'description': product.description,
+            'price': product.price,
+            'stock': product.stock,
+            'product_type': product.product_type.name,
+            'image': product.image
+        }
+        return Response({'response': 1, 'product': response})
+    except Product.DoesNotExist:
+        return Response({'response': 0})
 
 
 @api_view(['POST'])
