@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from purchases.models import Rate
 from users.models import User
 
 
@@ -144,4 +145,26 @@ def get_users_by_type(request):
                 )
         return Response({'response': 1, 'users': response})
     else:
+        return Response({'response': 0})
+
+
+@api_view(['GET'])
+@csrf_exempt
+def get_products_user(request, user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+        user_purchases = user.purchases_set.all()
+        response = []
+        for purchase in user_purchases:
+            rate = Rate.objects.get(user=user, product=purchase.product)
+            response.append({
+                'name': purchase.product.name,
+                'quantity': purchase.quantity,
+                'price': purchase.product.price,
+                'total': purchase.total,
+                'rate': rate.score,
+                'comment': rate.comment
+            })
+        return Response({'response': 1, 'user_purchases': response})
+    except User.DoesNotExist:
         return Response({'response': 0})
