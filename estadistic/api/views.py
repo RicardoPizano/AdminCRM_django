@@ -34,10 +34,12 @@ def clients_feeling(request):
             one_start += 1
 
     response = {
-        '5_stars': five_starts,
-        '4_stars': forth_starts,
-        '3_stars': tree_starts,
-        '2_stars': two_starts,
-        '1_stars': one_start
+        'five_stars': five_starts,
+        'forth_stars': forth_starts,
+        'tree_stars': tree_starts,
+        'two_stars': two_starts,
+        'one_stars': one_start
     }
     return Response({'response': 1, 'clients_feeling': response})
+
+
