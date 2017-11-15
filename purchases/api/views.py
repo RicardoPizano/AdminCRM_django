@@ -25,10 +25,10 @@ def register_purchase(request):
     except Product.DoesNotExist and User.DoesNotExist:
         return Response({'response': 0, 'errors': 'The product or user does not exist'})
 
-    if product.stock > quantity:
-        purchase = Purchases(user=user, porduct=product_id, quantity=quantity, total=total)
+    if product.stock > int(quantity):
+        purchase = Purchases(user=user, product=product, quantity=quantity, total=total)
         purchase.save()
-        product.stock = product.stock - quantity
+        product.stock = product.stock - int(quantity)
         product.save()
         return Response({'response': 1})
     else:
