@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 # Create your views here.
+from datetime import datetime
+
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -12,7 +14,7 @@ from products.models import ProductType, Product
 @api_view(['GET'])
 @csrf_exempt
 def get_products_types(request):
-    products_types = ProductType.objects.all()
+    products_types = ProductType.objects.filter(is_active=True)
     return Response({'response': 1, 'data': list(products_types.values())})
 
 
@@ -24,7 +26,8 @@ def get_products_types_by_id(request, product_type_id):
         response = {
             'id': product_type.pk,
             'name': product_type.name,
-            'description': product_type.description
+            'description': product_type.description,
+            'is_active': product_type.is_active
         }
         return Response({'response': 1, 'product_type': response})
     except ProductType.DoesNotExist:
@@ -34,14 +37,14 @@ def get_products_types_by_id(request, product_type_id):
 @api_view(['GET'])
 @csrf_exempt
 def get_products(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(is_active=True, product_type__is_active=True)
     return Response({'response': 1, 'data': list(products.values())})
 
 
 @api_view(['GET'])
 @csrf_exempt
 def get_products_by_type(request, type_id):
-    products = Product.objects.filter(product_type=type_id)
+    products = Product.objects.filter(product_type=type_id, product_type__is_active=True)
     return Response({'response': 1, 'data': list(products.values())})
 
 
@@ -57,7 +60,8 @@ def get_products_by_id(request, product_id):
             'price': product.price,
             'stock': product.stock,
             'product_type': product.product_type.name,
-            'image': product.image
+            'image': product.image,
+            'is_active': product.is_active
         }
         return Response({'response': 1, 'product': response})
     except Product.DoesNotExist:
@@ -133,7 +137,8 @@ def update_product(request):
 def delete_product_type(request):
     if request.method == 'POST':
         product_type = ProductType.objects.get(pk=request.data['id'])
-        product_type.delete()
+        product_type.is_active = False
+        product_type.save()
         return Response({'response': 1})
 
 
@@ -142,5 +147,7 @@ def delete_product_type(request):
 def delete_product(request):
     if request.method == 'POST':
         product = Product.objects.get(pk=request.data['id'])
-        product.delete()
+        product.is_active = False
+        product.delete_date = datetime.today()
+        product.save()
         return Response({'response': 1})

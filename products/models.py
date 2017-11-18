@@ -8,6 +8,7 @@ from django.db import models
 class ProductType(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
 
 
 class Product(models.Model):
@@ -17,3 +18,6 @@ class Product(models.Model):
     stock = models.IntegerField()
     product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     image = models.TextField()
+    delete_date = models.DateField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    register_date = models.DateField(auto_now=True)
