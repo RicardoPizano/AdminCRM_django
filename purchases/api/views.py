@@ -89,3 +89,32 @@ def get_product_rate(request, product_id):
         return Response({'response': 1, 'product_rate': response})
     else:
         return Response({'response': 0, 'errors': 'This product does not have rate'})
+
+
+@api_view(['GET'])
+def view_my_purchases(request, user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+        purchases = Purchases.objects.filter(user=user)
+        response = []
+        for purchase in purchases:
+            rate = get_rate(purchase.product, user)
+            response.append({
+                'name': purchase.product.name,
+                'quantity': purchase.quantity,
+                'unit_price': purchase.product.price,
+                'total': purchase.total,
+                'rate': rate
+            })
+        return Response({'response': 1, 'my_purchases': response})
+    except User.DoesNotExist:
+        return Response({'response': 0})
+
+
+def get_rate(product, user):
+    try:
+        rate = Rate.objects.filter(user=user, product=product)
+        return rate.score
+    except Rate.DoesNotExist:
+        return 0
+
