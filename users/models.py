@@ -15,4 +15,3 @@ class User(models.Model):
     password = models.CharField(max_length=255)
     user_type = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
-

@@ -113,7 +113,7 @@ def view_my_purchases(request, user_id):
 
 def get_rate(product, user):
     try:
-        rate = Rate.objects.filter(user=user, product=product)
+        rate = Rate.objects.get(user=user, product=product)
         return rate.score
     except Rate.DoesNotExist:
         return 0
