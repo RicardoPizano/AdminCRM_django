@@ -49,8 +49,15 @@ def register_rate(request):
     except Product.DoesNotExist and User.DoesNotExist:
         return Response({'response': 0, 'errors': 'The product or user does not exist'})
 
-    score = Rate(user=user, product=product, score=score, comment=comment)
-    score.save()
+    try:
+        rate = Rate.objects.get(user=user, product=product)
+        rate.score = score
+        rate.comment = comment
+        rate.save()
+    except Rate.DoesNotExist:
+        score = Rate(user=user, product=product, score=score, comment=comment)
+        score.save()
+
     return Response({'response': 1})
 
 
@@ -111,10 +118,10 @@ def view_my_purchases(request, user_id):
         return Response({'response': 0})
 
 
+@api_view(['GET'])
 def get_rate(product, user):
     try:
         rate = Rate.objects.get(user=user, product=product)
         return rate.score
     except Rate.DoesNotExist:
         return 0
-
