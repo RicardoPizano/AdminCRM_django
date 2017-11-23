@@ -107,6 +107,7 @@ def view_my_purchases(request, user_id):
         for purchase in purchases:
             rate = get_rate(purchase.product, user)
             response.append({
+                'id': purchase.product.id,
                 'name': purchase.product.name,
                 'quantity': purchase.quantity,
                 'unit_price': purchase.product.price,
@@ -118,7 +119,6 @@ def view_my_purchases(request, user_id):
         return Response({'response': 0})
 
 
-@api_view(['GET'])
 def get_rate(product, user):
     try:
         rate = Rate.objects.get(user=user, product=product)
